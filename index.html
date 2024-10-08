@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CountDown with Alarm</title>
+  </head>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+    }
+    .countdown-container {
+      text-align: center;
+    }
+    .countdown-timer {
+      font-size: 40px;
+      font-weight: bold;
+      color: black;
+      margin-bottom: 20px;
+    }
+    .countdown-label {
+      font-size: 20px;
+      color: black;
+    }
+    .date-input {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .time-input {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .alarm-button {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+  <body>
+    <div class="countdown-container">
+      <div class="countdown-timer" id="countdown"></div>
+      <div class="countdown-label">Select Target Date and Time:</div>
+      <input type="date" id="targetDateInput" class="date-input" />
+      <input type="time" id="targetTimeInput" class="time-input" />
+      <button id="setAlarmBtn" class="alarm-button">Set Alarm</button>
+    </div>
+
+    <script>
+      let targetDate = new Date("2025-01-01T00:00:00"); // Default date and time
+      let alarmSet = false;
+
+      // Function to update the countdown timer
+      function updateCountdown() {
+        const currentDate = new Date();
+        const timeDifference = targetDate - currentDate;
+
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown").innerHTML = `${days} d ${hours} h ${minutes} m ${seconds} s`;
+
+        // Check if alarm time has arrived
+        if (!alarmSet && timeDifference <= 0) {
+          alarmSet = true;
+          triggerAlarm();
+        }
+
+        // Update countdown every second
+        setTimeout(updateCountdown, 1000);
+      }
+
+      // Function to trigger the alarm
+      function triggerAlarm() {
+        alert("Time's up! The countdown has finished.");
+
+        // Optionally, play a sound or display a notification (can be expanded based on requirements)
+        const alarmSound = new Audio('https://www.soundjay.com/button/beep-07.wav');
+        alarmSound.play();
+      }
+
+      // Set target date and time based on user input
+      function setTargetDateAndTime() {
+        const inputDate = document.getElementById("targetDateInput").value;
+        const inputTime = document.getElementById("targetTimeInput").value;
+        
+        if (inputDate && inputTime) {
+          targetDate = new Date(inputDate + "T" + inputTime + ":00");
+          alarmSet = false; // Reset alarm status
+          updateCountdown();
+        }
+      }
+
+      // Add event listener to the button
+      document.getElementById("setAlarmBtn").addEventListener("click", setTargetDateAndTime);
+
+      // Initial countdown
+      updateCountdown();
+    </script>
+  </body>
+</html>
